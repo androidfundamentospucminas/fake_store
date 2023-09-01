@@ -1,0 +1,10 @@
+package com.walker.fakeecommerce.navigation
+
+enum class Screen(name: String) {
+    LOGIN_SCREEN("LOGIN_SCREEN"),
+    PRODUCT_DETAIL_SCREEN("PRODUCT_DETAIL_SCREEN"),
+    PRODUCTS_SCREEN("PRODUCTS_SCREEN"),
+    SIGNUP_SCREEN("SIGNUP_SCREEN"),
+    SHOPPING_CART("SHOPPING_CART"),
+    TERMS_AND_POLICY("TERMS_AND_POLICY")
+}

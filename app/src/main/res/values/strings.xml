@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">FakeEcommerce</string>
+    <string name="hello">Olá!</string>
+    <string name="create_account">Criar uma Conta </string>
+    <string name="welcome">Fake Store</string>
+    <string name="first_name">Primeiro Nome</string>
+    <string name="last_name">Segundo Nome</string>
+    <string name="email">Email</string>
+    <string name="password">Senha</string>
+    <string name="hide_password">Esconder senha</string>
+    <string name="show_password">Mostrar senha</string>
+    <string name="terms_and_conditions">Ao continuar você concorda que aceita nosso Termo de Uso e Política de Privacidade</string>
+    <string name="terms_and_conditions_header">Termo de Uso</string>
+    <string name="register">Registrar</string>
+    <string name="login">Login</string>
+    <string name="add_to_cart">Adicionar ao Carrinho </string>
+    <string name="or">ou</string>
+    <string name="go_to_login">Já tem uma conta? Login</string>
+    <string name="already_have">Já tem uma conta? </string>
+    <string name="dont_have">Não tem uma conta ainda? </string>
+
+    <string name="home">Home</string>
+    <string name="logout">Logout</string>
+    <string name="menu">Menu</string>
+    <string name="navigation_header">App Drawer</string>
+    <string name="quantity">Quantidade</string>
+    <string name="by_continuing">Ao continuar você concorda em aceitar nossa </string>
+    <string name="privacy_policy"> Política de Privacidade</string>
+    <string name="and">" e "</string>
+    <string name="user_term">Termo de Uso</string>
+</resources>
