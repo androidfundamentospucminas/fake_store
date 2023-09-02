@@ -3,8 +3,7 @@
     <string name="hello">Olá!</string>
     <string name="create_account">Criar uma Conta </string>
     <string name="welcome">Fake Store</string>
-    <string name="first_name">Primeiro Nome</string>
-    <string name="last_name">Segundo Nome</string>
+    <string name="name">Nome</string>
     <string name="email">Email</string>
     <string name="password">Senha</string>
     <string name="hide_password">Esconder senha</string>
@@ -28,4 +27,9 @@
     <string name="privacy_policy"> Política de Privacidade</string>
     <string name="and">" e "</string>
     <string name="user_term">Termo de Uso</string>
+    <string name="error_loading_profile">"Erro ao atualizar perfil. "</string>
+    <string name="retry">Tentar Novamente</string>
+    <string name="edit">Editar</string>
+    <string name="success_registerd">"Usuário registrado com sucesso! Por favor, realize o login.\n    "</string>
+    <string name="loading">Carregando...</string>
 </resources>

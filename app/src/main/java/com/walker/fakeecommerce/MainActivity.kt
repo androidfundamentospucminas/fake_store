@@ -10,13 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.walker.fakeecommerce.composables.LoginScreen
 import com.walker.fakeecommerce.composables.ProductDetailScreen
 import com.walker.fakeecommerce.composables.ProductsScreen
+import com.walker.fakeecommerce.composables.ProfileScreen
 import com.walker.fakeecommerce.composables.ShoppingScreen
 import com.walker.fakeecommerce.composables.SignUpScreen
 import com.walker.fakeecommerce.composables.TermsAndPolicyScreen
@@ -46,8 +47,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ProductApp(
-    productViewModel: ProductsViewModel = viewModel(),
-    cartViewModel: CartViewModel = viewModel()
+    productViewModel: ProductsViewModel = hiltViewModel(),
+    cartViewModel: CartViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
 
@@ -68,6 +69,9 @@ fun ProductApp(
         }
         composable(Screen.SHOPPING_CART.name) {
             ShoppingScreen(navController, cartViewModel, productViewModel)
+        }
+        composable(Screen.PROFILE_SCREEN.name) {
+            ProfileScreen(navController)
         }
         composable(Screen.TERMS_AND_POLICY.name) {
             TermsAndPolicyScreen(navController)

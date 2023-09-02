@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +46,11 @@ fun ProductsScreen(products: List<Product>, navController: NavHostController, vi
             TopAppBar(
                 title = {},
                 actions = {
+                    IconButton(onClick = {
+                        navController.navigate(Screen.PROFILE_SCREEN.name)
+                    }) {
+                        Icon(imageVector = Icons.Default.Person, contentDescription = "Profile")
+                    }
                     IconButton(onClick = {
                         navController.navigate(Screen.SHOPPING_CART.name)
                     }) {

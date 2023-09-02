@@ -100,11 +100,12 @@ fun HeadingTextComponent(value: String) {
 fun MyTextFieldComponent(
     labelValue: String, imageVector: ImageVector,
     onTextChanged: (String) -> Unit,
-    errorStatus: Boolean = false
+    errorStatus: Boolean = false,
+    initialValue: String = ""
 ) {
 
     val textValue = remember {
-        mutableStateOf("")
+        mutableStateOf(initialValue)
     }
     val localFocusManager = LocalFocusManager.current
 

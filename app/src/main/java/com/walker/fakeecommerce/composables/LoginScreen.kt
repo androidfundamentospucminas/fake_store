@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.walker.fakeecommerce.components.HeadingTextComponent
 import com.walker.fakeecommerce.components.MyTextFieldComponent
@@ -33,7 +33,7 @@ import com.walker.fakeecommerce.navigation.Screen
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    loginViewModel: LoginViewModel = viewModel()
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 

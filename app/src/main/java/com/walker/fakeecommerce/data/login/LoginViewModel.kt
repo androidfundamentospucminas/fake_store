@@ -3,9 +3,11 @@ package com.walker.fakeecommerce.data.login
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.walker.fakeecommerce.utils.Validator
-import com.walker.fakeecommerce.utils.isValidEmail
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor() : ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
 
@@ -63,7 +65,7 @@ class LoginViewModel : ViewModel() {
         val email = loginUIState.value.email
         val password = loginUIState.value.password
 
-        if (email == "annyufrr@gmail.com" && password == "anny123") {
+        if (email == "test@test.com" && password == "teste123") {
             onSuccess()
         } else {
             onFailure()

@@ -24,6 +24,9 @@ class ProductsViewModel @Inject constructor(): ViewModel() {
                 productsUIState.value = productsUIState.value.copy(
                     allProducts = allProductsTemp
                 )
+                if (productsUIState.value.selectedProduct?.id == event.product?.id) {
+                    productsUIState.value.selectedProduct = event.product?.copy(quantity = event.quantity)
+                }
             }
         }
     }
