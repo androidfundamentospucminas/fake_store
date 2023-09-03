@@ -1,11 +1,29 @@
 package com.walker.fakeecommerce.data.login
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.walker.fakeecommerce.model.AccessToken
+import com.walker.fakeecommerce.repositories.UserRepository
+import com.walker.fakeecommerce.utils.SessionManager
 import com.walker.fakeecommerce.utils.Validator
 import com.walker.fakeecommerce.utils.isValidEmail
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDate
+import java.time.Period
+import java.util.Date
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@RequiresApi(Build.VERSION_CODES.O)
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val sessionManager: SessionManager
+): ViewModel() {
 
     private val TAG = LoginViewModel::class.simpleName
 
@@ -15,6 +33,22 @@ class LoginViewModel : ViewModel() {
 
     var loginInProgress = mutableStateOf(false)
 
+    var logoutUser = mutableStateOf(false)
+
+    init {
+        loginUIState.value.loadingAlreadyLogged = true
+        val tokenExists = sessionManager.readToken() != null
+        if (tokenExists) {
+            val tokenDate = sessionManager.readDate()
+            if (Period.between(LocalDate.parse(tokenDate), LocalDate.now()).days > 20) {
+                onEvent(LoginUIEvent.LogoutUser)
+                logoutUser.value = true
+            } else {
+                loginUIState.value.alreadyLogged = true
+            }
+        }
+        loginUIState.value.loadingAlreadyLogged = false
+    }
 
     fun onEvent(event: LoginUIEvent) {
         when (event) {
@@ -33,8 +67,14 @@ class LoginViewModel : ViewModel() {
             }
 
             is LoginUIEvent.LoginButtonClicked -> {
-                login(event.onSuccess, event.onFailure)
-                validateLoginUIDataWithRules()
+                viewModelScope.launch {
+                    login(event.onSuccess, event.onFailure)
+                }
+            }
+
+            is LoginUIEvent.LogoutUser -> {
+                sessionManager.logout()
+                logoutUser.value = true
             }
         }
     }
@@ -54,20 +94,26 @@ class LoginViewModel : ViewModel() {
         )
 
         allValidationsPassed.value = emailResult.status && passwordResult.status
-
     }
 
-    private fun login(onSuccess: () -> Unit, onFailure: () -> Unit) {
 
+
+    private suspend fun login(onSuccess: () -> Unit, onFailure: () -> Unit) {
         loginInProgress.value = true
         val email = loginUIState.value.email
         val password = loginUIState.value.password
 
-        if (email == "annyufrr@gmail.com" && password == "anny123") {
-            onSuccess()
+        val result = userRepository.postLogin(email, password)
+
+        if (result.isSuccessful) {
+            result.body()?.let {
+                onSuccess()
+                sessionManager.writeToken(it)
+            }
         } else {
             onFailure()
         }
+
         loginInProgress.value = false
     }
 

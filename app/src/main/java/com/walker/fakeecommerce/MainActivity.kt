@@ -1,8 +1,10 @@
 package com.walker.fakeecommerce
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -10,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.walker.fakeecommerce.composables.LoginScreen
 import com.walker.fakeecommerce.composables.ProductDetailScreen
 import com.walker.fakeecommerce.composables.ProductsScreen
+import com.walker.fakeecommerce.composables.ProfileScreen
 import com.walker.fakeecommerce.composables.ShoppingScreen
 import com.walker.fakeecommerce.composables.SignUpScreen
 import com.walker.fakeecommerce.composables.TermsAndPolicyScreen
@@ -28,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -44,21 +49,20 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProductApp(
-    productViewModel: ProductsViewModel = viewModel(),
-    cartViewModel: CartViewModel = viewModel()
+    productViewModel: ProductsViewModel = hiltViewModel(),
+    cartViewModel: CartViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
-
-    val products = productViewModel.productsUIState.value.allProducts
 
     NavHost(navController = navController, startDestination = Screen.LOGIN_SCREEN.name) {
         composable(Screen.LOGIN_SCREEN.name) {
             LoginScreen(navController)
         }
         composable(Screen.PRODUCTS_SCREEN.name) {
-            ProductsScreen(products, navController, productViewModel)
+            ProductsScreen(navController, productViewModel)
         }
         composable(Screen.SIGNUP_SCREEN.name) {
             SignUpScreen(navController)
@@ -69,24 +73,11 @@ fun ProductApp(
         composable(Screen.SHOPPING_CART.name) {
             ShoppingScreen(navController, cartViewModel, productViewModel)
         }
+        composable(Screen.PROFILE_SCREEN.name) {
+            ProfileScreen(navController)
+        }
         composable(Screen.TERMS_AND_POLICY.name) {
             TermsAndPolicyScreen(navController)
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FakeEcommerceTheme {
-        Greeting("Android")
     }
 }

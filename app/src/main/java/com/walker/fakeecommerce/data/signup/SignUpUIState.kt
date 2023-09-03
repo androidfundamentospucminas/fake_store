@@ -1,15 +1,20 @@
 package com.walker.fakeecommerce.data.signup
 
-data class SignUpUIState(
-    var firstName :String = "",
-    var lastName  :String = "",
-    var email  :String = "",
-    var password  :String = "",
-    var privacyPolicyAccepted :Boolean = false,
+import android.net.Uri
+import androidx.core.net.toUri
 
-    var firstNameError :Boolean = false,
-    var lastNameError : Boolean = false,
-    var emailError :Boolean = false,
-    var passwordError : Boolean = false,
-    var privacyPolicyError:Boolean = false
+data class SignUpUIState(
+    var name: String = "",
+    var email: String = "",
+    var image: Uri = "".toUri(),
+    var password: String = "",
+    var privacyPolicyAccepted: Boolean = false,
+
+    var firstNameError: Boolean = false,
+    var lastNameError: Boolean = false,
+    var emailError: Boolean = false,
+    var passwordError: Boolean = false,
+    var privacyPolicyError: Boolean = false,
+
+    var registerError: Boolean = false
 )

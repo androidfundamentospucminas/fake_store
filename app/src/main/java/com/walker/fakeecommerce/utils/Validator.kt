@@ -1,5 +1,7 @@
 package com.walker.fakeecommerce.utils
 
+import android.net.Uri
+
 object Validator {
     fun validateFirstName(fName: String): ValidationResult {
         return ValidationResult(
@@ -7,13 +9,6 @@ object Validator {
         )
 
     }
-
-    fun validateLastName(lName: String): ValidationResult {
-        return ValidationResult(
-            (!lName.isNullOrEmpty() && lName.length >= 2)
-        )
-    }
-
     fun validateEmail(email: String): ValidationResult {
         return ValidationResult(
             (!email.isNullOrEmpty())
@@ -29,6 +24,12 @@ object Validator {
     fun validatePrivacyPolicyAcceptance(statusValue:Boolean):ValidationResult{
         return ValidationResult(
             statusValue
+        )
+    }
+
+    fun validateImage(image: Uri): ValidationResult {
+        return ValidationResult(
+            image.toString().isNotEmpty()
         )
     }
 
