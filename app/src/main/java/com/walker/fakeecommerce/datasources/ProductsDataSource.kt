@@ -7,6 +7,6 @@ class ProductsDataSource @Inject constructor(
     private val apiService: ApiService
 ) {
 
-    suspend fun getProducts() = apiService.getProducts()
+    suspend fun getProducts(offset: Int, limit: Int) = apiService.getProducts(offset, limit)
 
 }

@@ -12,11 +12,15 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("products?offset=0&limit=10")
-    suspend fun getProducts(): Response<List<Product>>
+    @GET("products")
+    suspend fun getProducts(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int
+    ): Response<List<Product>>
 
     @GET("auth/profile")
     suspend fun getProfile(): Response<Profile>

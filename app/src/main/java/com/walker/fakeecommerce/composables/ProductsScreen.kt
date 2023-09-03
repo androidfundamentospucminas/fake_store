@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.Person
@@ -27,6 +29,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +56,8 @@ fun ProductsScreen(navController: NavHostController, viewModel: ProductsViewMode
     val products = viewModel.productsUIState.value.allProducts
     val isLoading = viewModel.productsUIState.value.productsAreLoading
     val hasError = viewModel.productsUIState.value.productsLoadingError
+
+    val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
         if (products.isEmpty()) {
@@ -77,18 +84,6 @@ fun ProductsScreen(navController: NavHostController, viewModel: ProductsViewMode
             )
         },
         content = {
-            if (isLoading) {
-                Column(
-                    modifier = Modifier
-                        .padding(it)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
             if (hasError) {
                 Column(
                     modifier = Modifier
@@ -107,7 +102,7 @@ fun ProductsScreen(navController: NavHostController, viewModel: ProductsViewMode
                 }
             }
 
-            if (!isLoading && !hasError) {
+            if (!hasError) {
                 ProductList(products, it, onItemClick = { product ->
                     viewModel.onEvent(
                         ProductsUIEvent.OpenProductDetail(
@@ -118,21 +113,30 @@ fun ProductsScreen(navController: NavHostController, viewModel: ProductsViewMode
                         )
 
                     )
-                })
+                }, listState)
             }
         },
-
     )
+
+    listState.OnBottomReached {
+        viewModel.onEvent(ProductsUIEvent.GetProducts)
+    }
 }
 
 @Composable
-fun ProductList(products: List<Product>, paddingValues: PaddingValues, onItemClick: (Product) -> Unit) {
+fun ProductList(
+    products: List<Product>,
+    paddingValues: PaddingValues,
+    onItemClick: (Product) -> Unit,
+    listState: LazyListState
+) {
     Column (
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)) {
         Text(text = "Produtos", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 25.dp, bottom = 15.dp))
         LazyColumn(
+            state = listState,
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
@@ -190,5 +194,26 @@ fun ProductItem(product: Product, onItemClick: (Product) -> Unit) {
             }
 
         }
+    }
+}
+
+@Composable
+fun LazyListState.OnBottomReached(
+    loadMore: () -> Unit
+) {
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+                ?: return@derivedStateOf true
+
+            lastVisibleItem.index == layoutInfo.totalItemsCount - 1
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore) {
+        snapshotFlow { shouldLoadMore.value }
+            .collect {
+                if (it) loadMore()
+            }
     }
 }

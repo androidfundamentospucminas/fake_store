@@ -88,4 +88,7 @@ dependencies {
     // Aux Coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
+
+    // Mockk
+    implementation "io.mockk:mockk:1.13.7"
 }

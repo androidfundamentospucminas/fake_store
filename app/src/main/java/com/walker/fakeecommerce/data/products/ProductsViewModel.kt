@@ -15,6 +15,9 @@ class ProductsViewModel @Inject constructor(
 
     var productsUIState = mutableStateOf(ProductsUIState())
 
+    private var currentOffset = 0
+    private val currentLimit = 10
+
     fun onEvent(event: ProductsUIEvent) {
         when (event) {
             is ProductsUIEvent.OpenProductDetail -> {
@@ -38,25 +41,29 @@ class ProductsViewModel @Inject constructor(
                 viewModelScope.launch {
                     productsUIState.value = productsUIState.value.copy(
                         productsAreLoading = true,
-                        productsLoadingError = false,
-                        allProducts = listOf()
+                        productsLoadingError = false
                     )
 
-                    val response = productsRepository.getProducts()
+                    val response = productsRepository.getProducts(currentOffset, currentLimit)
 
                     if (response.isSuccessful) {
+                        val currentProducts = productsUIState.value.allProducts.toMutableList()
+
+                        currentProducts.addAll(response.body() ?: emptyList())
+
                         productsUIState.value = productsUIState.value.copy(
-                            allProducts = response.body() ?: emptyList(),
+                            allProducts = currentProducts,
                             productsAreLoading = false,
                             productsLoadingError = false
                         )
                     } else {
                         productsUIState.value = productsUIState.value.copy(
-                            allProducts = emptyList(),
                             productsAreLoading = false,
                             productsLoadingError = true
                         )
                     }
+
+                    currentOffset += currentLimit
                 }
             }
         }
