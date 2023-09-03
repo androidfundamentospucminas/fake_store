@@ -1,6 +1,7 @@
 package com.walker.fakeecommerce.repositories
 
 import com.walker.fakeecommerce.datasources.UserDataSource
+import com.walker.fakeecommerce.model.Profile
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -15,4 +16,10 @@ class UserRepository @Inject constructor(
 
     suspend fun getProfile() =
         userDataSource.getProfile()
+
+    suspend fun updateProfile(profile: Profile) =
+        userDataSource.updateProfile(profile)
+
+    suspend fun deleteProfile(id: String) =
+        userDataSource.deleteProfile(id)
 }

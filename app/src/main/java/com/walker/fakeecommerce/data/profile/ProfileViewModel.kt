@@ -26,17 +26,19 @@ class ProfileViewModel @Inject constructor(
 
     var allValidationsPassed = mutableStateOf(false)
 
-    val profile = Profile(
-        id = "123",
-        email = "test@test.mail",
-        name = "Test",
-        avatar = ""
-    )
-
     fun onEvent(event: ProfileUIEvents) {
         when (event) {
             is ProfileUIEvents.DeleteAccount -> {
-                logoutUser.value = true
+                viewModelScope.launch {
+                    profileUIState.value.profile?.id?.let {
+                        val result = userRepository.deleteProfile(it)
+
+                        if (result.isSuccessful) {
+                            sessionManager.logout()
+                            logoutUser.value = true
+                        }
+                    }
+                }
             }
             is ProfileUIEvents.GetProfile -> {
                 profileUIState.value = profileUIState.value.copy(
@@ -105,22 +107,32 @@ class ProfileViewModel @Inject constructor(
 
     private fun editProfile() {
         profileUIState.value = profileUIState.value.copy(
-            profileIsLoading = true
+            profileIsLoading = true,
+            profileError = false
         )
 
         viewModelScope.launch {
-            delay(500)
-
             profileUIState.value.profile?.let {
                 val profileToEdit = it
 
                 profileToEdit.name = profileUIState.value.nameField
 
-                profileUIState.value = profileUIState.value.copy(
-                    profileIsLoading = false,
-                    profile = profileToEdit,
-                    nameField = profileToEdit.name
-                )
+                val result = userRepository.updateProfile(profileToEdit)
+
+                if (result.isSuccessful) {
+                    val newProfile = result.body()
+                    profileUIState.value = profileUIState.value.copy(
+                        profileIsLoading = false,
+                        profile = newProfile,
+                        nameField = newProfile?.name ?: "",
+                        profileError = false
+                    )
+                } else {
+                    profileUIState.value = profileUIState.value.copy(
+                        profileIsLoading = false,
+                        profileError = true
+                    )
+                }
             }
         }
     }
