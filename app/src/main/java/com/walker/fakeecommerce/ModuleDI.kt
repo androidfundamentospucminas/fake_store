@@ -3,8 +3,11 @@ package com.walker.fakeecommerce
 import android.content.Context
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.walker.fakeecommerce.datasources.ProductsDataSource
 import com.walker.fakeecommerce.datasources.UserDataSource
 import com.walker.fakeecommerce.network.ApiService
+import com.walker.fakeecommerce.repositories.ProductsRepository
+import com.walker.fakeecommerce.repositories.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,5 +53,20 @@ class ModuleDI {
     @Singleton
     fun provideUserDataSource(apiService: ApiService) =
         UserDataSource(apiService)
+
+    @Provides
+    @Singleton
+    fun provideUserReposito(userDataSource: UserDataSource) =
+        UserRepository(userDataSource)
+
+    @Provides
+    @Singleton
+    fun provideProductsDataSource(apiService: ApiService) =
+        ProductsDataSource(apiService)
+
+    @Provides
+    @Singleton
+    fun provideProductsRepository(productsDataSource: ProductsDataSource) =
+        ProductsRepository(productsDataSource)
 
 }

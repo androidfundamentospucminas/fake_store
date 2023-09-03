@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,14 +26,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
+import com.walker.fakeecommerce.R
+import com.walker.fakeecommerce.components.ButtonComponent
 import com.walker.fakeecommerce.data.products.ProductsUIEvent
 import com.walker.fakeecommerce.data.products.ProductsViewModel
 import com.walker.fakeecommerce.model.Product
@@ -40,7 +46,18 @@ import com.walker.fakeecommerce.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductsScreen(products: List<Product>, navController: NavHostController, viewModel: ProductsViewModel) {
+fun ProductsScreen(navController: NavHostController, viewModel: ProductsViewModel) {
+
+    val products = viewModel.productsUIState.value.allProducts
+    val isLoading = viewModel.productsUIState.value.productsAreLoading
+    val hasError = viewModel.productsUIState.value.productsLoadingError
+
+    LaunchedEffect(Unit) {
+        if (products.isEmpty()) {
+            viewModel.onEvent(ProductsUIEvent.GetProducts)
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -60,16 +77,49 @@ fun ProductsScreen(products: List<Product>, navController: NavHostController, vi
             )
         },
         content = {
-            ProductList(products, it, onItemClick = { product ->
-                viewModel.onEvent(
-                    ProductsUIEvent.OpenProductDetail(
-                        product,
-                        onNavigate = {
-                            navController.navigate("product_detail_screen")
-                        }
+            if (isLoading) {
+                Column(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            if (hasError) {
+                Column(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = stringResource(id = R.string.error_loading))
+                    ButtonComponent(
+                        value = stringResource(id = R.string.retry),
+                        onButtonClicked = {
+                               viewModel.onEvent(ProductsUIEvent.GetProducts)
+                        },
+                        imageVector = Icons.Default.ArrowCircleDown)
+                }
+            }
+
+            if (!isLoading && !hasError) {
+                ProductList(products, it, onItemClick = { product ->
+                    viewModel.onEvent(
+                        ProductsUIEvent.OpenProductDetail(
+                            product,
+                            onNavigate = {
+                                navController.navigate("product_detail_screen")
+                            }
+                        )
+
                     )
-                )
-            })
+                })
+            }
         },
 
     )
@@ -78,7 +128,9 @@ fun ProductsScreen(products: List<Product>, navController: NavHostController, vi
 @Composable
 fun ProductList(products: List<Product>, paddingValues: PaddingValues, onItemClick: (Product) -> Unit) {
     Column (
-        modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)) {
         Text(text = "Produtos", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 25.dp, bottom = 15.dp))
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
@@ -117,7 +169,7 @@ fun ProductItem(product: Product, onItemClick: (Product) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             SubcomposeAsyncImage(
-                model = product.image,
+                model = product.images?.get(0),
                 loading = {
                     CircularProgressIndicator()
                 },

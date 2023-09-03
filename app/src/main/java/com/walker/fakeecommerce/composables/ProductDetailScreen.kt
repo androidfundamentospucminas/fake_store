@@ -106,7 +106,7 @@ fun ProductDetailContent(
                 .verticalScroll(rememberScrollState())
         ) {
             SubcomposeAsyncImage(
-                model = product?.image,
+                model = product?.images?.get(0),
                 loading = {
                     CircularProgressIndicator()
                 },
@@ -144,7 +144,7 @@ fun ProductDetailContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = product?.category ?: "-",
+                text = product?.category?.name ?: "-",
                 fontSize = 16.sp
             )
 

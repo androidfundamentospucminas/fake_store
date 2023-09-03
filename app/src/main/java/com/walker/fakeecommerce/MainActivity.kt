@@ -52,14 +52,12 @@ fun ProductApp(
 ) {
     val navController = rememberNavController()
 
-    val products = productViewModel.productsUIState.value.allProducts
-
     NavHost(navController = navController, startDestination = Screen.LOGIN_SCREEN.name) {
         composable(Screen.LOGIN_SCREEN.name) {
             LoginScreen(navController)
         }
         composable(Screen.PRODUCTS_SCREEN.name) {
-            ProductsScreen(products, navController, productViewModel)
+            ProductsScreen(navController, productViewModel)
         }
         composable(Screen.SIGNUP_SCREEN.name) {
             SignUpScreen(navController)
