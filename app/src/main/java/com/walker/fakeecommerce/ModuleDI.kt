@@ -1,5 +1,6 @@
 package com.walker.fakeecommerce
 
+import android.content.Context
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.walker.fakeecommerce.datasources.UserDataSource
@@ -7,6 +8,7 @@ import com.walker.fakeecommerce.network.ApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -15,6 +17,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class ModuleDI {
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(
+        @ApplicationContext context: Context
+    ) = context.getSharedPreferences("fake_ecommerce_manager", Context.MODE_PRIVATE)
 
     @Provides
     @Singleton

@@ -1,5 +1,7 @@
 package com.walker.fakeecommerce.network
 
+import com.walker.fakeecommerce.model.AccessToken
+import com.walker.fakeecommerce.model.LoginUser
 import com.walker.fakeecommerce.model.User
 import retrofit2.Response
 import retrofit2.http.Body
@@ -11,5 +13,10 @@ interface ApiService {
     suspend fun postUser(
         @Body user: User
     ): Response<User>
+
+    @POST("auth/login")
+    suspend fun postLogin(
+        @Body loginUser: LoginUser
+    ): Response<AccessToken>
 
 }

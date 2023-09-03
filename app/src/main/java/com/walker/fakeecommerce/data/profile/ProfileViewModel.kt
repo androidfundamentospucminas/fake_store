@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.walker.fakeecommerce.model.Profile
+import com.walker.fakeecommerce.utils.SessionManager
 import com.walker.fakeecommerce.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -12,6 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    private val sessionManager: SessionManager
 ): ViewModel() {
 
     private val TAG = ProfileViewModel::class.simpleName
@@ -53,6 +55,7 @@ class ProfileViewModel @Inject constructor(
 
             is ProfileUIEvents.Logout -> {
                 logoutUser.value = true
+                sessionManager.logout()
             }
 
             is ProfileUIEvents.EditProfile -> {
