@@ -3,6 +3,7 @@ package com.walker.fakeecommerce.network
 import com.walker.fakeecommerce.model.AccessToken
 import com.walker.fakeecommerce.model.LoginUser
 import com.walker.fakeecommerce.model.Product
+import com.walker.fakeecommerce.model.Profile
 import com.walker.fakeecommerce.model.User
 import retrofit2.Response
 import retrofit2.http.Body
@@ -13,6 +14,9 @@ interface ApiService {
 
     @GET("products?offset=0&limit=10")
     suspend fun getProducts(): Response<List<Product>>
+
+    @GET("auth/profile")
+    suspend fun getProfile(): Response<Profile>
 
     @POST("users")
     suspend fun postUser(

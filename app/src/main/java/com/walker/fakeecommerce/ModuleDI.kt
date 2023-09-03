@@ -6,13 +6,16 @@ import com.google.firebase.storage.StorageReference
 import com.walker.fakeecommerce.datasources.ProductsDataSource
 import com.walker.fakeecommerce.datasources.UserDataSource
 import com.walker.fakeecommerce.network.ApiService
+import com.walker.fakeecommerce.network.AuthInterceptor
 import com.walker.fakeecommerce.repositories.ProductsRepository
 import com.walker.fakeecommerce.repositories.UserRepository
+import com.walker.fakeecommerce.utils.SessionManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -37,11 +40,20 @@ class ModuleDI {
 
     @Provides
     @Singleton
+    fun provideOkHttpClient(sessionManager: SessionManager): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(sessionManager))
+            .build()
+
+    @Provides
+    @Singleton
     fun provideRetrofit(
-        baseUrl: String
+        baseUrl: String,
+        okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .baseUrl(baseUrl)
+        .client(okHttpClient)
         .build()
 
     @Provides

@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.walker.fakeecommerce.model.Profile
+import com.walker.fakeecommerce.repositories.UserRepository
 import com.walker.fakeecommerce.utils.SessionManager
 import com.walker.fakeecommerce.utils.Validator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val userRepository: UserRepository
 ): ViewModel() {
 
     private val TAG = ProfileViewModel::class.simpleName
@@ -42,14 +44,23 @@ class ProfileViewModel @Inject constructor(
                 )
 
                 viewModelScope.launch {
-                    delay(500)
+                    val result = userRepository.getProfile()
 
-                    profileUIState.value = profileUIState.value.copy(
-                        profile = profile,
-                        profileError =  false,
-                        nameField = profile.name,
-                        profileIsLoading = false
-                    )
+                    if (result.isSuccessful) {
+                        val profileResult = result.body()
+                        profileUIState.value = profileUIState.value.copy(
+                            profile = profileResult,
+                            profileError =  false,
+                            nameField = profileResult?.name ?: "-",
+                            profileIsLoading = false
+                        )
+                    } else {
+                        profileUIState.value = profileUIState.value.copy(
+                            profile = null,
+                            profileError =  true,
+                            profileIsLoading = false
+                        )
+                    }
                 }
             }
 
